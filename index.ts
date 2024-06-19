@@ -12,12 +12,12 @@ export class DemoDdbStreamAndLambdaStack extends Stack {
       description: 'Demo for DDB Streams' }
     );
 
-    const dynamoTable = new Table(this, 'items', {
+    const dynamoTable = new Table(this, 'joshua-ven-items', {
       partitionKey: {
         name: 'itemId',
         type: AttributeType.STRING
       },
-      tableName: 'items',
+      tableName: 'joshua-ven-items-table',
       stream: StreamViewType.NEW_AND_OLD_IMAGES,
       removalPolicy: RemovalPolicy.DESTROY,
     });
@@ -32,12 +32,12 @@ export class DemoDdbStreamAndLambdaStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
     }
 
-    const lambdaFunc = new NodejsFunction(this, 'basicHandler', {
+    const lambdaFunc = new NodejsFunction(this, 'joshua-ven-basicHandler', {
       entry: join(__dirname, 'lambdas', 'basic-handler.ts'),
       ...nodeJsFunctionProps,
     });
 
-    lambdaFunc.addEventSourceMapping("ddb-stream-lambda", {
+    lambdaFunc.addEventSourceMapping("joshua-ven-ddb-stream-lambda", {
       eventSourceArn: dynamoTable.tableStreamArn,
       batchSize: 1,
       retryAttempts: 1,
@@ -57,5 +57,5 @@ export class DemoDdbStreamAndLambdaStack extends Stack {
 }
 
 const app = new App();
-new DemoDdbStreamAndLambdaStack(app, 'DdbStreamExample');
+new DemoDdbStreamAndLambdaStack(app, 'joshua-ven-DdbStreamExample');
 app.synth();
